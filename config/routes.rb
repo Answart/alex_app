@@ -1,9 +1,15 @@
 AlexApp::Application.routes.draw do
-  get "static_pages/home"
-  get "static_pages/help"
-  get "static_pages/about"
-  get "static_pages/contact"
-  get "static_pages/sitemap"
+  get "users/new"
+  # get "static_pages/home"
+  # match '/',      to: 'static_pages#home',    via: 'get'
+  root 'static_pages#home'
+
+  get "/help",    to: 'static_pages#help',    via: 'get'
+  get "/about",   to: 'static_pages#about',   via: 'get'
+  get "/contact", to: 'static_pages#contact', via: 'get'
+  get "/sitemap", to: 'static_pages#sitemap', via: 'get'
+
+  match '/signup',to: 'users#new',            via: 'get'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
