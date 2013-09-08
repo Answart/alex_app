@@ -1,3 +1,5 @@
+# Patterns for files that should be ignored by Git as we don’t want our version control system to have to update them constantly
+
 # Ignore bundler config.
 /.bundle
 
