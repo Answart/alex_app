@@ -1,6 +1,11 @@
 # SOURCE: app/models/user.rb
+# THIRD step:
+## 1. receive action based on controller's URL/action pair in step 2
+# FOURTH STEP:
+## 1. retrieve info from database (/db) based on model's structure
+
 # code for the User model for when a potential User is created.
-# a created User is an accepted User because when has the following...
+# a created User is an accepted User because when it has the following...
 # if a blank User is created, alex_app creates one based on these stats (ids with nil values).
 
 class User < ActiveRecord::Base

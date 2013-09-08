@@ -85,10 +85,17 @@ p {
   line-height: 1.7em;
 }
 
-/******************** header */
-.navbar, navbar-fixed-top, navbar-inverse {
-	background-color: #3e3c44;
+/******************** header 
+navbar {
+  background-color: #3e3c44;
 }
+*/
+
+.hero-unit {
+  background-color: #faf7ee;
+}
+
+
 
 #logo {
   float: left;

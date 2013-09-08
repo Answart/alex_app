@@ -1,3 +1,6 @@
+# This is used by Rails to encrypt session variables so that it is dynamically 
+## generated rather than hard-coded
+
 # Be sure to restart your server when you modify this file.
 
 # Your secret key is used for verifying the integrity of signed cookies.

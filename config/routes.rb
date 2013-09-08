@@ -1,16 +1,25 @@
+# SOURCE: config/routes.rb
+# FIRST step: browser requests a URL like '/users'
+## 1. identifies the router's URL/action pair
+## 2. dispatches to the proper controller action based on the URL
+## (EX: the index action in app/controllers/users_controller.rb)
+
+
 AlexApp::Application.routes.draw do
   get "users/new"
   # get "static_pages/home"
   # match '/',      to: 'static_pages#home',    via: 'get'
   root 'static_pages#home'
 
-  get "/help",    to: 'static_pages#help',    via: 'get'
-  get "/about",   to: 'static_pages#about',   via: 'get'
-  get "/contact", to: 'static_pages#contact', via: 'get'
-  get "/sitemap", to: 'static_pages#sitemap', via: 'get'
+  # matches a GET request for '/about' and routes it to the about action in
+  ## StaticPages controller
+  match "/help",    to: 'static_pages#help',    via: 'get'
+  match "/about",   to: 'static_pages#about',   via: 'get'
+  match "/contact", to: 'static_pages#contact', via: 'get'
+  match "/sitemap", to: 'static_pages#sitemap', via: 'get'
 
-  match '/signup',to: 'users#new',            via: 'get'
-  #match '/signin',to: 'static_pages#signin',  via: 'get'
+  match '/signin',  to: 'static_pages#signin',  via: 'get'
+  match '/signup',  to: 'users#new',            via: 'get'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

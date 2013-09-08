@@ -3,6 +3,7 @@
 # ensures that the data model from the development database, db/development.sqlite3, is reflected in the test database, db/test.sqlite3.
 # tests currently for: app/models/user.rb
 
+# AKA /spec/spec_helper.rb
 require 'spec_helper'
 
 describe User do

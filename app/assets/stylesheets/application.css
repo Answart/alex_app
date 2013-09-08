@@ -8,6 +8,11 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
+ * specifies where in the loading sequence the CSS in application.css
+ * itself gets included
  *= require_self
+ *
+ * ensures that all CSS files in the app/assets/stylesheets directory
+ * (including the tree subdirectories) are included into the application CSS
  *= require_tree .
  */

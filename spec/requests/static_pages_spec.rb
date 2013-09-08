@@ -1,6 +1,12 @@
+# SOURCE: spec/requests/static_pages_spec.rb
+# integration test (request spec) for static pages
+
+
+# AKA /spec/spec_helper.rb
 require 'spec_helper'
 
 describe "Static pages" do
+  # page is a variable supplied by Capybara
   subject { page }
   # let(:base_title) { "Ruby on Rails Tutorial Alex App" }
 
@@ -62,7 +68,7 @@ describe "Static pages" do
     click_link "Help"
     expect(page).to have_title(full_title('Help'))
     #click_link "Sign in"
-   #expect(page).to have_title(full_title('Sign in'))
+    #expect(page).to have_title(full_title('Sign in'))
     # container
     #click_link "Sign up now!"
     #expect(page).to have_title(full_title('Sign up'))
