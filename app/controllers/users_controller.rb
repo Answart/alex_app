@@ -21,8 +21,36 @@
 
 class UsersController < ApplicationController
 
-  # source: /users/new
+  # source: /users/(:id) (EX: /users/1, /users/56353471) AKA app/views/users/show.html.erb
+  # user profile page
+  def show
+  	# the show action for the Users controller which uses the 'find' 
+  	## method on the User model to retrieve the user from the database
+    @user = User.find(params[:id])
+  end
+
+  # source: /users/new AKA app/views/static_pages/new.html.erb
+  # user registration page
   def new
+  	# the '@user' the /new page uses will be a brand new User
+    @user = User.new
+  end
+
+  # source: there is not (nor should there be) a view template corresponding to the create action
+  # for when f.submit has been clicked on the new page
+  def create
+  	# used to be 'params[:user]' but changed to the private 'user_params' for security reasons
+    @user = User.new(user_params)
+    # if submit is valid and it saves...
+    if @user.save
+      # Add a flash message to user signup since its successful
+      flash[:success] = "Welcome to the Alex App!"
+      # Redirect to the newly created user’s profile (show page)
+      redirect_to @user
+    # else keep on user registration page (new page)
+    else
+      render 'new'
+    end
   end
 
   # asks the User model the browser will be sent to, to retrieve a list of 
@@ -30,5 +58,18 @@ class UsersController < ApplicationController
   #def index
   # => @users = User.all
   #end
+
+  # Using 'private' means the following will only be used internally by the 
+  ## Users controller and need not expose the following methods to external users via the web
+  private
+
+  	# ensures submitted data returns an appropriate initialization hash
+  	# Prohibits any user of the site to gain administrative access by 
+  	## including admin=’1’ in their web request
+    def user_params
+      # :user only permits these attributes...
+      params.require(:user).permit(:name, :email, :password,
+                                   :password_confirmation)
+    end
 
 end

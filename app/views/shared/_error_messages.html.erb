@@ -1,0 +1,22 @@
+<!-- SOURCE: app/views/shared/_error_messages.html.erb
+One of a series of partials rendered to be used in Views across multiple controllers shown through error message boxes. Occurs in the 'yield' div in the application layout.
+THIS PARTIAL - when a View has an error(s), this page allows Rails to communicate how many errors there are and what they are.
+(introduces several new Rails/Ruby constructs, including two methods for Rails error objects)
+-->
+
+<!-- When a requested page is sent back to the browser, these yields are also shown if there are errors -->
+<% if @user.errors.any? %>
+  <div id="error_explanation">
+    <!-- returns the amount of errors -->
+    <div class="alert alert-error">
+    <!-- This form contains '1 error', This form contains '4 errors' -->
+      The form contains <%= pluralize(@user.errors.count, "error") %>.
+    </div>
+    <ul>
+    <!-- For each error message, have a line as: * 'message' -->
+    <% @user.errors.full_messages.each do |msg| %>
+      <li>* <%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>

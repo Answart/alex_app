@@ -1,11 +1,37 @@
 <!-- 
-SOURCE: app/views/static_pages/new.html.erb
+SOURCE: app/views/users/new.html.erb
+-USER CREATION PAGE-
 SIXTH step:
 1. receives info from controller (Static_Pages_Controller in this case)
 SEVENTH step:
-1. view uses embedded Ruby to render the page as HTML
+1. This View uses embedded Ruby to render the page as HTML and sends it back 
+	to the controller
  -->
 
 <% provide(:title, 'Sign up') %>
 <h1>Sign up</h1>
-<p>Find me in app/views/users/new.html.erb</p>
+
+<div class="row">
+  <div class="span6 offset3">
+  	<!-- 'do' keyword indicates that 'form_for' takes a block with one variable, which we’ve called 'f' for “form” -->
+  	<!-- By this point, it is expected '@user' to be a User object -->
+    <%= form_for(@user) do |f| %>
+      <!-- show in box what errors this page may contain -->
+      <%= render 'shared/error_messages' %>
+
+      <%= f.label :name %>
+      <%= f.text_field :name %>
+
+      <%= f.label :email %>
+      <%= f.text_field :email %>
+
+      <%= f.label :password %>
+      <%= f.password_field :password %>
+
+      <%= f.label :password_confirmation, "Confirmation" %>
+      <%= f.password_field :password_confirmation %>
+
+      <%= f.submit "Create my account", class: "btn btn-large btn-primary" %>
+    <% end %>
+  </div>
+</div>

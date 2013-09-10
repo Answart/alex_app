@@ -1,0 +1,16 @@
+<!-- SOURCE: app/views/users/show.html.erb
+-PROFILE PAGE-
+This page uses Embedded Ruby to display the user’s name and email address, assuming the existence of an instance variable called @user
+-->
+
+<% provide(:title, @user.name) %>
+<div class="row">
+  <aside class="span4">
+    <section>
+      <h1>
+        <%= gravatar_for @user %>
+        <%= @user.name %>
+      </h1>
+    </section>
+  </aside>
+</div>

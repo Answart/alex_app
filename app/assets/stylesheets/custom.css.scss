@@ -16,10 +16,15 @@ link hover -> #749b5b
 /* mixins, variables, etc. 
 $grayMediumLight: #eaeaea;*/
 
+/* 
+Sass mixin facility: allows a group of CSS rules to be packaged up 
+and used for multiple elements
+*/
 @mixin box_sizing {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  background-color:#faf7ee;
 }
 
 /* miscellaneous */
@@ -32,6 +37,7 @@ $grayMediumLight: #eaeaea;*/
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  background-color:#faf7ee;
 }
 
 /******************** universal */
