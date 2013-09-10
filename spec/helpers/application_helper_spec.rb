@@ -1,4 +1,7 @@
-require 'spec_helper'
+# SOURCE: spec/helpers/application_helper_spec.rb
+# used in spec/support/utilities.rb
+
+require 'spec_helper' # AKA spec/spec_helper.rb
 
 describe ApplicationHelper do
 

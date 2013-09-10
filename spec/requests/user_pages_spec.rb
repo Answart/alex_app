@@ -24,24 +24,42 @@ describe "User pages" do
     # let the symbol ':submit' refer to the when the button f.submit, called 
     ## "Create my account", is clicked
     let(:submit) { "Create my account" }
-    # if 
+    
+    # a page with invalid info on f.submit ...
     describe "with invalid information" do
+      ## ... should not increase User count
       it "should not create a user" do
         expect { click_button submit }.not_to change(User, :count)
       end
+      ## ... should now show the following content:
+      describe "after submission" do
+        before { click_button submit }
+        it { should have_title('Sign up') }
+        it { should have_content('error') }
+      end
     end
-    # 
+
+    # a page with valid info on f.submit ...
     describe "with valid information" do
-      # insure all blanks are filled in so submit validly increases User count by 1
+      ## ... has filled in these input fields 
       before do
         fill_in "Name",         with: "Example User"
         fill_in "Email",        with: "user@example.com"
         fill_in "Password",     with: "foobar"
         fill_in "Confirmation", with: "foobar"
       end
+      ## ... changed the User count by 1
       it "should create a user" do
-      	# everytime a submit is clicked, it changes the User count by 1
         expect { click_button submit }.to change(User, :count).by(1)
+      end
+      ## ... identified the new :user by email and redirected to profile page 
+      describe "after saving the user" do
+        before { click_button submit }
+        let(:user) { User.find_by(email: 'user@example.com') }
+
+        it { should have_title(user.name) }
+        # contain particular CSS classes along with specific HTML tags
+        it { should have_selector('div.alert.alert-success', text: 'Welcome') }
       end
     end
   end

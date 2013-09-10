@@ -1,19 +1,16 @@
 # SOURCE: spec/requests/static_pages_spec.rb
 # integration test (request spec) for static pages
 
-
-# AKA /spec/spec_helper.rb
-require 'spec_helper'
+require 'spec_helper'   # AKA /spec/spec_helper.rb
 
 describe "Static pages" do
-  # page is a variable supplied by Capybara
-  subject { page }
+  subject { page }    # page is a variable supplied by Capybara
   # let(:base_title) { "Ruby on Rails Tutorial Alex App" }
-
-  # shared examples to eliminate the kind of duplication
+  
+  # any { page } with this "quote" should include the following content:
   shared_examples_for "all static pages" do
     it { should have_selector('h1', text: heading) }
-    # this = spec/support/utilities.rb
+    # refers to: spec/support/utilities.rb or spec/helpers/application_helper_spec.rb
     it { should have_title(full_title(page_title)) }
   end
 
@@ -58,7 +55,6 @@ describe "Static pages" do
     let(:page_title) { '' }
   end
 
-  # 
   it "should have the right links on the layout" do
     visit root_path
     # header
@@ -68,7 +64,6 @@ describe "Static pages" do
     click_link "Help"
     expect(page).to have_title(full_title('Help'))
     #click_link "Sign in"
-    #expect(page).to have_title(full_title('Sign in'))
     # container
     #click_link "Sign up now!"
     #expect(page).to have_title(full_title('Sign up'))

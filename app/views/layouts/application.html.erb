@@ -25,7 +25,8 @@
       <!-- Adding the contents of the flash variable to the site layout
       If a page uses flash, you tell it which key and it will show coresponding value -->
       <% flash.each do |key, value| %>
-        <div class="alert alert-<%= key %>"><%= value %></div>
+        <!-- content_tag: returns an HTML div block containing 'value' based on the 'key' alert -->
+        <%= content_tag(:div, value, class: "alert alert-#{key}") %>
       <% end %>
       <!-- render requested content depending on URL -->
       <%= yield %>

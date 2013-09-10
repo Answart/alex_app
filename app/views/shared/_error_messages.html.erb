@@ -9,11 +9,11 @@ THIS PARTIAL - when a View has an error(s), this page allows Rails to communicat
   <div id="error_explanation">
     <!-- returns the amount of errors -->
     <div class="alert alert-error">
-    <!-- This form contains '1 error', This form contains '4 errors' -->
+    <!-- EX: This form contains '1 error', This form contains '4 errors' -->
       The form contains <%= pluralize(@user.errors.count, "error") %>.
     </div>
     <ul>
-    <!-- For each error message, have a line as: * 'message' -->
+    <!-- each error message has a line as: * "message" -->
     <% @user.errors.full_messages.each do |msg| %>
       <li>* <%= msg %></li>
     <% end %>
