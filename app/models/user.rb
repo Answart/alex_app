@@ -15,6 +15,8 @@ class User < ActiveRecord::Base
   ## use case-sensitive indices
   # sets the user’s email address to a lower-case version of its current value
   before_save { self.email = email.downcase }
+  # run this method before saving the user (method is defined privately)
+  before_create :create_remember_token
 
   # ensure that each 'USER' has the following:
   validates :name,  presence: true, length: { maximum: 50 }
@@ -29,6 +31,23 @@ class User < ActiveRecord::Base
   has_secure_password
   validates :password, length: { minimum: 6 }
 
+  # 
+  def User.new_remember_token
+    SecureRandom.urlsafe_base64
+  end
+
+  def User.encrypt(token)
+    Digest::SHA1.hexdigest(token.to_s)
+  end
+
+  private
+    # def method assigns to one of the user attributes ('self' keyword) which
+    ## ensures that assignment sets the user’s remember_token, and as a result
+    ## it will be written to the database along with the other attributes when
+    ## the user is saved
+    def create_remember_token
+      self.remember_token = User.encrypt(User.new_remember_token)
+    end
 end
 
 

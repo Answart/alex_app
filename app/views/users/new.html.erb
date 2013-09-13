@@ -14,9 +14,9 @@ SEVENTH step:
 <div class="row">
   <div class="span6 offset3">
   	<!-- 'do' keyword indicates that 'form_for' takes a block with one variable, which we’ve called 'f' for “form” -->
-  	<!-- By this point, it is expected '@user' to be a User object -->
+  	<!-- By this point, it is expected '@user' to be a User object and POST to the URL /users -->
     <%= form_for(@user) do |f| %>
-      <!-- show in box what errors this page may contain from the rendering of app/views/shared/_error_messages.html.erb code -->
+      <!-- show in box what errors this page may contain based on rendering of app/views/shared/_error_messages.html.erb code -->
       <%= render 'shared/error_messages' %>
 
       <%= f.label :name %>

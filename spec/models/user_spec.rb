@@ -16,7 +16,6 @@ describe User do
     @user = User.new(name: "Example User", email: "user@example.com",
               password: "foobar", password_confirmation: "foobar")
   end
-
   
   # BASICS
   # the default subject of the test (which is @user),
@@ -31,10 +30,12 @@ describe User do
   # FYI: password attributes will be virtual—they will only exist temporarily in memory, and will not be persisted to the database
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
-  # all attributes for User should be valid to be an accepted User
-  it { should be_valid }
+  # to store a remember token equal to the user’s id to stay logged in (cookie)
+  it { should respond_to(:remember_token) }
   # require a User object to respond to authenticate
   it { should respond_to(:authenticate) }
+  # all attributes for User should be valid to be an accepted User
+  it { should be_valid }
 
   
   # VALIDATIONS
@@ -157,7 +158,11 @@ describe User do
       specify { expect(user_for_invalid_password).to be_false }
     end
   end
-
+  # test for a valid (nonblank) remember token
+  describe "remember token" do
+    before { @user.save }
+    its(:remember_token) { should_not be_blank }
+  end
 end
 
 # RSpec boolean convention:

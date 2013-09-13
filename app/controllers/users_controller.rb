@@ -18,7 +18,6 @@
 
 # each 'def's main purpose is to modify information about users in the database
 
-
 class UsersController < ApplicationController
 
   # source: /users/(:id) (EX: /users/1, /users/56353471) AKA app/views/users/show.html.erb
@@ -41,8 +40,9 @@ class UsersController < ApplicationController
   def create
   	# used to be 'params[:user]' but changed to the private 'user_params' for security reasons
     @user = User.new(user_params)
-    # if submit is valid and it saves...
+    # if submit is valid and is saved ...
     if @user.save
+      sign_in @user
       # Add a flash message to user signup since its successful
       flash[:success] = "Welcome to the Alex App!"
       # Redirect to the newly created user’s profile (show page)

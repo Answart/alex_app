@@ -12,5 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+/* This uses the Sprockets library to include the Bootstrap JavaScript, which in turn is available thanks to the bootstrap-sass gem */
+//= require bootstrap
 //= require turbolinks
 //= require_tree .
