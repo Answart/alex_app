@@ -24,7 +24,6 @@ module SessionsHelper
     !current_user.nil?
   end
 
-  # defines a method 'current_user=' expressly designed to handle assignment to 'current_user'
   def current_user=(user)
     @current_user = user
   end
@@ -38,9 +37,28 @@ module SessionsHelper
     @current_user ||= User.find_by(remember_token: remember_token)
   end
 
+  # defines a method 'current_user=' expressly designed to handle assignment to 'current_user'
+  def current_user?(user)
+    user == current_user
+  end
+
   # 'sign out' method
   def sign_out
     self.current_user = nil
     cookies.delete(:remember_token)
+  end
+
+  # code to implement friendly forwarding. 
+  def redirect_back_or(default) # AKA redirect to intended destination
+    redirect_to(session[:return_to] || default)
+    session.delete(:return_to)
+  end
+  # requested URL becomes session's ':return_to', (when its a GET request AKA if request.get?). 
+  ## This prevents storing forwarding URL if computer suddenly doesn't recognize user:
+  ## not logged in (an edge case but could happen if a user deleted the remember token
+  ## by hand before submitting the form); in this case, the resulting redirect would 
+  ## issue a GET request to a URL expecting POST, PATCH, or DELETE, causing an error
+  def store_location # AKA intended destination
+    session[:return_to] = request.url if request.get?
   end
 end

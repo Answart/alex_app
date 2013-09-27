@@ -6,9 +6,13 @@
 FactoryGirl.define do
   # tells Factory Girl the subsequent definition is for a User model object
   factory :user do
-    name     "Michael Hartl"
-    email    "mhartl@example.com"
+    sequence(:name)  { |n| "Person #{n}" }
+    sequence(:email) { |n| "person_#{n}@example.com"}
     password "foobar"
     password_confirmation "foobar"
+
+    factory :admin do
+      admin true
+    end
   end
 end

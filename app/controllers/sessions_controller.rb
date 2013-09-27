@@ -30,12 +30,12 @@ class SessionsController < ApplicationController
   # refers to user's profile page based on log in info
   def create
   	# the active user is the User object specified by the submitted email input (lowercased)
-  	user = User.find_by(email: params[:email].downcase) # form_for version: user = User.find_by(email: params[:session][:email].downcase)
+  	user = User.find_by(email: params[:session][:email].downcase) # user = User.find_by(email: params[:email].downcase) 
   	# if active user and inputed password correlate to the same User object ...
-  	if user && user.authenticate(params[:password]) # form_for version: if user && user.authenticate(params[:session][:password])    (set up to accept a hash from form_for method AKA [:sessions])
+  	if user && user.authenticate(params[:session][:password]) # (set up to accept a hash from form_for method AKA [:sessions])
       ## ... sign the user in and redirect to the user's show page.
       sign_in user
-      redirect_to user
+      redirect_back_or user # OR: redirect_to user
   	else
       ## ... create an error message and re-render the signin form.
       # flash.now is specifically designed for displaying flash messages on rendered

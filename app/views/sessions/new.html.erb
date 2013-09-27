@@ -13,26 +13,26 @@ SEVENTH step:
 
 <div class="row">
   <div class="span6 offset3">
-  	<!-- form_tag -->
-    <%= form_tag sessions_path, method: 'post' do -%>
-      <%= label_tag 'email' %><br />
-      <%= text_field_tag :email, params[:email], placeholder: "Email" %>
+  	<!-- form_tag
+    form_tag sessions_path, method: 'post' do
+      label_tag 'email' <br />
+      text_field_tag :email, params[:email], placeholder: "Email"
 
-      <%= label_tag 'password' %><br />
-      <%= password_field_tag :password %>
+      label_tag 'password' <br />
+      password_field_tag :password
 
-      <%= submit_tag 'Sign in' %>
-    <%  end -%>
+      submit_tag 'Sign in'
+    end  -->
     <!-- 'do' keyword indicates that 'form_for' takes a block with one variable, which we’ve called 'f' for “form” -->
     <!-- indicate the name of the resource, and the corresponding URL -->
-    <!-- CHANGED FROM: 'form_for'
-     form_for(:session, url: sessions_path) do |f|
-      f.label :email
-      f.text_field :email
-      f.label :password
-      f.password_field :password
-      f.submit "Sign In", class: "btn btn-large btn-primary"
-    end -->
+    <!-- CHANGED FROM: 'form_for' -->
+    <%= form_for(:session, url: sessions_path) do |f| %>
+      <%= f.label :email %>
+      <%= f.text_field :email %>
+      <%= f.label :password %>
+      <%= f.password_field :password %>
+      <%= f.submit "Sign in", class: "btn btn-large btn-primary" %>
+    <% end %>
     <p>New user? <%= link_to "Sign up now!", signup_path %></p>
   </div>
 </div>

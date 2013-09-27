@@ -34,31 +34,37 @@ describe User do
   it { should respond_to(:remember_token) }
   # require a User object to respond to authenticate
   it { should respond_to(:authenticate) }
+  it { should respond_to(:admin) }
   # all attributes for User should be valid to be an accepted User
   it { should be_valid }
+  it { should_not be_admin }
 
-  
+  describe "with admin attribute set to 'true'" do
+    before do
+      @user.save!
+      @user.toggle!(:admin)
+    end
+    it { should be_admin }
+  end
+
   # VALIDATIONS
   # 'describe' tells you the name of the error when you do a spec check
-  
   # if the :name is blank, its an invalid attribute.
   describe "when name is not present" do
     before { @user.name = " " }
     it { should_not be_valid }
   end
-
-  # if the :email is blank, its an invalid attribute. 
-  describe "when email is not present" do
-    before { @user.email = " " }
-    it { should_not be_valid }
-  end
-
   # if :name has a string.length of 51, its an invalid attribute.
   describe "when name is too long" do
     before { @user.name = "a" * 51 }
     it { should_not be_valid }
   end
 
+  # EMAIL:
+  describe "when email is not present" do
+    before { @user.email = " " }
+    it { should_not be_valid }
+  end
   # if :email address is invalid, its an invalid attribute
   describe "when email format is invalid" do
     it "should be invalid" do

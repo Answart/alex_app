@@ -19,6 +19,15 @@
 # each 'def's main purpose is to modify information about users in the database
 
 class UsersController < ApplicationController
+  before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
+  before_action :correct_user,   only: [:edit, :update]
+  before_action :admin_user,     only: :destroy
+
+  # asks the User model the browser will be sent to, to retrieve a list of 
+  ## all the users from the database (step 3)
+  def index
+    @users = User.paginate(page: params[:page])
+  end
 
   # source: /users/(:id) (EX: /users/1, /users/56353471) AKA app/views/users/show.html.erb
   # user profile page
@@ -35,6 +44,28 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  # /users/1/edit or /users/2342960/edit or /users/:id/edit
+  def edit
+    # @user = User.find(params[:id])
+  end
+
+  def update
+    #@user = User.find(params[:id])
+    if @user.update_attributes(user_params)
+      flash[:success] = "Profile updated"
+      #sign_in @user
+      redirect_to @user
+    else
+      render 'edit'
+    end
+  end
+
+  def destroy
+    User.find(params[:id]).destroy
+    flash[:success] = "User destroyed."
+    redirect_to users_url
+  end
+
   # source: there is not (nor should there be) a view template corresponding to the create action
   # for when f.submit has been clicked on the new page
   def create
@@ -49,20 +80,14 @@ class UsersController < ApplicationController
       redirect_to @user
     # else keep on user registration page (new page)
     else
+      flash.now[:error] = 'Invalid email/password combination'
       render 'new'
     end
   end
 
-  # asks the User model the browser will be sent to, to retrieve a list of 
-  ## all the users from the database (step 3)
-  #def index
-  # => @users = User.all
-  #end
-
   # Using 'private' means the following will only be used internally by the 
   ## Users controller and need not expose the following methods to external users via the web
   private
-
   	# ensures submitted data returns an appropriate initialization hash
   	# Prohibits any user of the site to gain administrative access by 
   	## including admin=’1’ in their web request
@@ -70,6 +95,25 @@ class UsersController < ApplicationController
       # :user only permits these attributes...
       params.require(:user).permit(:name, :email, :password,
                                    :password_confirmation)
+    end
+
+    # Before filters apply to every action in a controller (in this case only for edit and update)
+    def signed_in_user
+      unless signed_in?
+        store_location
+        redirect_to signin_url, notice: "Please sign in."
+      end
+      # redirect_to signin_url, notice: "Please sign in." unless signed_in?
+    end
+
+    # 
+    def correct_user
+      @user = User.find(params[:id])
+      redirect_to(root_url) unless current_user?(@user)
+    end
+
+    def admin_user
+      redirect_to(root_url) unless current_user.admin?
     end
 
 end
