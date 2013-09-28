@@ -22,6 +22,8 @@ class UsersController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
   before_action :admin_user,     only: :destroy
+  # Exercise 9.6: 
+  before_filter :signed_in_user_filter, only: [:new, :create]
 
   # asks the User model the browser will be sent to, to retrieve a list of 
   ## all the users from the database (step 3)
@@ -60,16 +62,27 @@ class UsersController < ApplicationController
     end
   end
 
+  #def destroy
+  #  User.find(params[:id]).destroy
+  #  flash[:success] = "User destroyed."
+  #  redirect_to users_url
+  #end
+  # Exercise 9.9
   def destroy
-    User.find(params[:id]).destroy
-    flash[:success] = "User destroyed."
-    redirect_to users_url
+    @user = User.find(params[:id])
+    if current_user?(@user)
+      redirect_to users_path, notice: "You can't destroy yourself."
+    else
+      @user.destroy
+      flash[:success] = "User destroyed."
+      redirect_to users_url
+    end
   end
 
   # source: there is not (nor should there be) a view template corresponding to the create action
   # for when f.submit has been clicked on the new page
   def create
-  	# used to be 'params[:user]' but changed to the private 'user_params' for security reasons
+    # used to be 'params[:user]' but changed to the private 'user_params' for security reasons
     @user = User.new(user_params)
     # if submit is valid and is saved ...
     if @user.save
@@ -80,8 +93,15 @@ class UsersController < ApplicationController
       redirect_to @user
     # else keep on user registration page (new page)
     else
-      flash.now[:error] = 'Invalid email/password combination'
+      #flash.now[:error] = 'Invalid email/password combination'
       render 'new'
+    end
+  end
+
+  # Exercise 9.6: 
+  def signed_in_user_filter
+    if signed_in?
+        redirect_to root_path, notice: "Already logged in"
     end
   end
 

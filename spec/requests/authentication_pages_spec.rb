@@ -25,6 +25,9 @@ describe "Authentication" do
         before { click_link "Home" }
         it { should_not have_selector('div.alert.alert-error') }
       end
+      ## ... should not show information
+      it { should_not have_link('Profile')} # ,     href: user_path(user) 
+      it { should_not have_link('Settings')} # ,    href: edit_user_path(user)
     end
 
     # if sign-in info is valid when logging on ...
@@ -76,6 +79,23 @@ describe "Authentication" do
           it "should render the desired protected page" do
             expect(page).to have_title('Edit user')
           end
+          # Exercise 9.8: A test for forwarding to the default page after friendly forwarding.
+          # a test to make sure that the friendly forwarding only forwards to the 
+          ## given URL the first time. On subsequent signin attempts, the forwarding 
+          ## URL should revert to the default (i.e., the profile page). 
+          describe "when signing in again" do
+            before do
+              delete signout_path
+              visit signin_path
+              fill_in "Email",    with: user.email
+              fill_in "Password", with: user.password
+              click_button login
+            end
+
+            it "should render the default (profile) page" do
+              expect(page).to have_title(user.name)
+            end
+          end
         end
       end
 
@@ -126,7 +146,49 @@ describe "Authentication" do
         specify { expect(response).to redirect_to(root_url) }
       end
     end
+
+    # Exercise 9.6: Signed-in users have no reason to access the new and create 
+    ## actions in the Users controller. Arrange for such users to be redirected to 
+    ## the root URL if they do try to hit those pages
+    describe "for signed in users" do
+      let(:user) { FactoryGirl.create(:user) }
+      # passing a user hash when POSTing, and using the no_capybara option on the 
+      ## sign_in method, since get and post are not capybara methods and I think 
+      ## RSpec doesn't behave as we might expect if we switch from capybara to 
+      ## non-capybara methods within the same test.
+      before { sign_in user, no_capybara: true  } # used because a user hash would only be needed if Rails actually carries out the create method, which is what we're trying to prevent.
+
+      describe "using 'new' action" do
+        before { get new_user_path }
+        #specify { expect(response).to redirect_to(root_url) } # specify { response.should redirect_to(root_path) }
+        specify { response.should redirect_to(root_path) }
+        #it { should_not have_selector 'title', text: full_title('Sign Up') }
+      end
+
+      describe "using 'create' action" do
+        before do
+          @user_new = {name: "Example User", 
+                   email: "user@example.com", 
+                   password: "foobar", 
+                   password_confirmation: "foobar"}
+          post users_path, user: @user_new 
+        end
+        specify { response.should redirect_to(root_path) } # specify { expect(response).to redirect_to(root_path) }
+        # it { should_not have_selector 'title', text: full_title('Sign Up') }
+      end    
+    end
+
+    #describe "admin users" do
+      ## Exercise 10.6.5 Modify the destroy action to prevent admin
+      ## users from destroying themselves. (Write a test first.)
+    #  it "cannot destroy themselves" do
+    #    admin = Factory(:user, :email => "admin@example.com", :admin => true)
+    #    test_sign_in(admin)
+    #    User.should_receive(:find).with(admin).and_return(admin)
+    #    delete :destroy, :id => admin
+    #    response.should redirect_to(users_path)
+    #    flash[:error].should =~ /Admin suicide warning/i
+    #  end
+    #end
   end
-
-
 end
