@@ -35,6 +35,9 @@ describe User do
   # require a User object to respond to authenticate
   it { should respond_to(:authenticate) }
   it { should respond_to(:admin) }
+  # test for the user’s microposts attribute. 
+  it { should respond_to(:microposts) }
+  it { should respond_to(:feed) }
   # all attributes for User should be valid to be an accepted User
   it { should be_valid }
   it { should_not be_admin }
@@ -168,6 +171,48 @@ describe User do
   describe "remember token" do
     before { @user.save }
     its(:remember_token) { should_not be_blank }
+  end
+
+  # Testing the order of a user’s microposts. 
+  describe "micropost associations" do
+    before { @user.save }
+    # with let!, which forces the corresponding variable to come into existence immediately
+    let!(:older_micropost) do
+      FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+    end
+    let!(:newer_micropost) do
+      FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
+    end
+
+    it "should have the right microposts in the right order" do
+      # ordered newest first
+      # to_a: converts @user.microposts from its default state (which happens to be an Active Record “collection proxy”) to a proper array appropriate for comparison with the one we constructed by hand
+      expect(@user.microposts.to_a).to eq [newer_micropost, older_micropost]
+    end
+
+    # Testing that microposts are destroyed when users are
+    it "should destroy associated microposts" do
+      microposts = @user.microposts.to_a
+      @user.destroy
+      # safety check to catch any errors should the to_a ever be accidentally removed
+      expect(microposts).not_to be_empty
+      microposts.each do |micropost|
+        # expectation that the microposts don’t appear in the database
+        # 'Micropost.where' returns an empty object if the record is not found instead of raising an exception, which is a little easier to test
+        expect(Micropost.where(id: micropost.id)).to be_empty
+      end
+    end
+
+    # 
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
+      end
+
+      its(:feed) { should include(newer_micropost) }
+      its(:feed) { should include(older_micropost) }
+      its(:feed) { should_not include(unfollowed_post) }
+    end
   end
 end
 

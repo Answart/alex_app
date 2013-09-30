@@ -1,0 +1,17 @@
+<!-- SOURCE: app/views/shared/_user_info.html.erb
+The partial for the user info sidebar. 
+used in app/views/static_pages/home.html.erb
+ -->
+
+<%= link_to gravatar_for(current_user, size: 52), current_user %>
+<h1>
+  <%= current_user.name %>
+</h1>
+<span>
+  <%= link_to "view my profile", current_user %>
+</span>
+<span>
+  <!-- displays the total number of microposts for the user. 
+  Shows "1 micropost” (but “2 microposts”) using pluralize-->
+  <%= pluralize(current_user.microposts.count, "micropost") %>
+</span>

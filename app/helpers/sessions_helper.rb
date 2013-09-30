@@ -42,6 +42,14 @@ module SessionsHelper
     user == current_user
   end
 
+  # Moving the signed_in_user method into the Sessions helper
+  def signed_in_user
+    unless signed_in?
+      store_location
+      redirect_to signin_url, notice: "Please sign in."
+    end
+  end # used to be in Users Controller
+
   # 'sign out' method
   def sign_out
     self.current_user = nil

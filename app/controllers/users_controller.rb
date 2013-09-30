@@ -37,6 +37,8 @@ class UsersController < ApplicationController
   	# the show action for the Users controller which uses the 'find' 
   	## method on the User model to retrieve the user from the database
     @user = User.find(params[:id])
+    # '.paginate' works through the microposts association, reaching into the microposts table and pulling out the desired page of microposts
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   # source: /users/new AKA app/views/static_pages/new.html.erb
@@ -98,13 +100,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # Exercise 9.6: 
-  def signed_in_user_filter
-    if signed_in?
-        redirect_to root_path, notice: "Already logged in"
-    end
-  end
-
   # Using 'private' means the following will only be used internally by the 
   ## Users controller and need not expose the following methods to external users via the web
   private
@@ -118,13 +113,13 @@ class UsersController < ApplicationController
     end
 
     # Before filters apply to every action in a controller (in this case only for edit and update)
-    def signed_in_user
-      unless signed_in?
-        store_location
-        redirect_to signin_url, notice: "Please sign in."
-      end
-      # redirect_to signin_url, notice: "Please sign in." unless signed_in?
-    end
+    #def signed_in_user
+    #  unless signed_in?
+    #    store_location
+    #    redirect_to signin_url, notice: "Please sign in."
+    #  end
+      #- redirect_to signin_url, notice: "Please sign in." unless signed_in?
+    #end -> MOVED TO: app/helpers/sessions_helper.rb
 
     # 
     def correct_user
@@ -132,8 +127,16 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless current_user?(@user)
     end
 
+    # Exercise 9.9: A before filter restricting the destroy action to admins. 
     def admin_user
       redirect_to(root_url) unless current_user.admin?
+    end
+
+    # Exercise 9.6: 
+    def signed_in_user_filter
+      if signed_in?
+        redirect_to root_path, notice: "Already logged in"
+      end
     end
 
 end

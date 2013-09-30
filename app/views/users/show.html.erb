@@ -5,6 +5,7 @@ This page uses Embedded Ruby to display the user’s name and email address, ass
 
 <% provide(:title, @user.name) %>
 <div class="row">
+
   <aside class="span4">
     <section>
       <h1>
@@ -13,4 +14,19 @@ This page uses Embedded Ruby to display the user’s name and email address, ass
       </h1>
     </section>
   </aside>
+
+  <div class="span8">
+    <% if @user.microposts.any? %>
+      <!-- counts the microposts belonging to a given user through the user/micropost association -->
+      <h3>Microposts (<%= @user.microposts.count %>)</h3>
+      <ol class="microposts">
+        <%= render @microposts %>
+      </ol>
+      <!-- preemptively added pagination for microposts
+      will_paginate assumes the existence of an instance variable called @users which should be of class ActiveRecord::Relation
+       -->
+      <%= will_paginate @microposts %>
+    <% end %>
+  </div>
+
 </div>

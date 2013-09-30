@@ -1,21 +1,41 @@
-<!-- 
-SOURCE: app/views/static_pages/home.html.erb
+<!-- SOURCE: app/views/static_pages/home.html.erb
 SIXTH step:
 1. receives info from controller (Static_Pages_Controller in this case)
 SEVENTH step:
 1. view uses embedded Ruby to render the page as HTML
  -->
 
-<div class="center hero-unit">
-  <h1>Welcome to the Alex App</h1>
+<!-- Adding microposts creation to the Home page -->
+<% if signed_in? %>
+  <div class="row">
+    <aside class="span4">
+      <section>
+        <%= render 'shared/user_info' %> <!-- AKA  app/views/shared/_user_info.html.erb -->
+      </section>
+      <section>
+        <%= render 'shared/micropost_form' %> <!-- AKA app/views/shared/_micropost_form.html.erb -->
+      </section>
+    </aside>
+    <!-- status feed -->
+    <div class="span8">
+      <h3>Micropost Feed</h3>
+      <%= render 'shared/feed' %>
+    </div>
+  </div>
 
-  <h2>
-    This is the home page for the
-    <a href="http://railstutorial.org/">Ruby on Rails Tutorial</a>
-    personal sample application.
-  </h2>
+<% else %>
+  <div class="center hero-unit">
+  	<h1>Welcome to the Alex App</h1>
 
-  <%= link_to "Sign up now!", signup_path, class: "btn btn-large btn-primary" %>
-</div>
+  	<h2>
+      This is the home page for the
+      <a href="http://railstutorial.org/">Ruby on Rails Tutorial</a>
+      personal sample application.
+  	</h2>
 
-<%= link_to image_tag("smile.jpg", alt: "Rails"), 'http://rubyonrails.org/', class: "img-circle" %>
+  	<%= link_to "Sign up now!", signup_path, class: "btn btn-large btn-primary" %>
+  </div>
+
+  <%= link_to image_tag("smile.jpg", alt: "Rails"), 'http://rubyonrails.org/', class: "img-circle" %>
+
+<% end %>

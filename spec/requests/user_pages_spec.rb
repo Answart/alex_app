@@ -7,9 +7,12 @@ require 'spec_helper'  # AKA /spec/spec_helper.rb
 describe "User pages" do
   subject { page }
   let(:login) { "Sign in" }
+  let(:savechanges) { "Save changes" }
+  let(:signup) { "Create my account" }
+  let(:user) { FactoryGirl.create(:user) } # AKA spec/factories.rb
 
   describe "index" do
-  	let(:user) { FactoryGirl.create(:user) } # AKA spec/factories.rb
+  	#let(:user) { FactoryGirl.create(:user) } # AKA spec/factories.rb
     before(:each) do
       sign_in user
       visit users_path
@@ -53,10 +56,21 @@ describe "User pages" do
   describe "profile page" do # AKA app/views/users/show.html.erb
 	# creates a User factory through 'let' and the FactoryGirl method supplied
 	## by the Factory Girl gem which defines Active Record objects
-	  let(:user) { FactoryGirl.create(:user) }
+	  #let(:user) { FactoryGirl.create(:user) }
+    # 
+    let!(:m1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
+    let!(:m2) { FactoryGirl.create(:micropost, user: user, content: "Bar") }
 	  before { visit user_path(user) }
 	  it { should have_content(user.name) }
 	  it { should have_title(user.name) }
+
+    # test for showing microposts on the user show page
+    describe "microposts" do
+      it { should have_content(m1.content) }
+      it { should have_content(m2.content) }
+      # count the microposts with the given user_id
+      it { should have_content(user.microposts.count) }
+    end
   end
 
   # /create action
@@ -64,19 +78,19 @@ describe "User pages" do
     before { visit signup_path }
     it { should have_content('Sign up') }
     it { should have_title(full_title('Sign up')) }
-    # let the symbol ':submit' refer to the when the button f.submit, called 
+    # let the symbol ':signup' refer to the when the button f.submit, called 
     ## "Create my account", is clicked
-    let(:submit) { "Create my account" }
+    #let(:signup) { "Create my account" }
 
     # a page with invalid info on f.submit ...
     describe "with invalid information" do
       ## ... should not increase User count
       it "should not create a user" do
-        expect { click_button submit }.not_to change(User, :count)
+        expect { click_button signup }.not_to change(User, :count)
       end
       ## ... should now show the following content:
       describe "after submission" do
-        before { click_button submit }
+        before { click_button signup }
         it { should have_title('Sign up') }
         it { should have_content('error') }
       end
@@ -93,11 +107,11 @@ describe "User pages" do
       end
       ## ... changed the User count by 1
       it "should create a user" do
-        expect { click_button submit }.to change(User, :count).by(1)
+        expect { click_button signup }.to change(User, :count).by(1)
       end
       ## ... identified the new :user by email and redirected to profile page 
       describe "after saving the user" do
-        before { click_button submit }
+        before { click_button signup }
         let(:user) { User.find_by(email: 'user@example.com') }
 
         it { should have_title(user.name) }
@@ -106,7 +120,7 @@ describe "User pages" do
       end
       ## ... has a user successfully signed in
       describe "after saving the user" do
-        before { click_button submit }
+        before { click_button signup }
         let(:user) { User.find_by(email: 'user@example.com') }
 
         it { should have_link('Sign out') }
@@ -118,9 +132,9 @@ describe "User pages" do
 
   # /edit action
   describe "edit" do # AKA app/views/users/edit.html.erb
-    let(:user) { FactoryGirl.create(:user) }
+    #let(:user) { FactoryGirl.create(:user) }
     #before { visit edit_user_path(user) }
-    let(:savechanges) { "Save changes" }
+    #let(:savechanges) { "Save changes" }
     #let(:login) { "Sign in" }
     before do # Adding a signin step to the edit and update tests.
       sign_in user

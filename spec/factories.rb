@@ -15,4 +15,10 @@ FactoryGirl.define do
       admin true
     end
   end
+  # a micropost factory to construct microposts in the User model test
+  factory :micropost do
+    content "Lorem ipsum"
+    # tells Factory Girl about micropost’s associated user just by including a user in the definition of the factory
+    user
+  end
 end

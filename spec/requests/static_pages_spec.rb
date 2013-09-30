@@ -6,6 +6,7 @@ require 'spec_helper'   # AKA /spec/spec_helper.rb
 describe "Static pages" do
   subject { page }    # page is a variable supplied by Capybara
   # let(:base_title) { "Ruby on Rails Tutorial Alex App" }
+  let(:login) { "Sign in" }
   
   # any { page } with this "quote" should include the following content:
   shared_examples_for "all static pages" do
@@ -21,6 +22,24 @@ describe "Static pages" do
     let(:heading)    { 'Alex App' }
     let(:page_title) { '' }
     it { should_not have_title('| Home') }
+
+    # rendering the feed on the Home page
+    describe "for signed-in users" do
+      let(:user) { FactoryGirl.create(:user) }
+      before do
+        FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
+        FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
+        sign_in user
+        visit root_path
+      end
+
+      it "should render the user's feed" do
+        user.feed.each do |item|
+          # (Note that the first # in li##{item.id} is Capybara syntax for a CSS id, whereas the second # is the beginning of a Ruby string interpolation #{}.)
+          expect(page).to have_selector("li##{item.id}", text: item.content)
+        end
+      end
+    end
   end
 
   describe "Help page" do

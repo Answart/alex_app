@@ -5,16 +5,16 @@ THIS PARTIAL - when a View has an error(s), this page allows Rails to communicat
 -->
 
 <!-- When a requested page is sent back to the browser, these yields are also shown if there are errors -->
-<% if @user.errors.any? %>
+<% if object.errors.any? %>
   <div id="error_explanation">
     <!-- returns the amount of errors -->
     <div class="alert alert-error">
     <!-- EX: This form contains '1 error', This form contains '4 errors' -->
-      The form contains <%= pluralize(@user.errors.count, "error") %>.
+      The form contains <%= pluralize(object.errors.count, "error") %>.
     </div>
     <ul>
     <!-- each error message has a line as: * "message" -->
-    <% @user.errors.full_messages.each do |msg| %>
+    <% object.errors.full_messages.each do |msg| %>
       <li>* <%= msg %></li>
     <% end %>
     </ul>

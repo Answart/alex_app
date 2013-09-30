@@ -1,0 +1,11 @@
+<!-- SOURCE: app/views/shared/_feed.html.erb
+
+-->
+
+<% if @feed_items.any? %>
+  <ol class="microposts">
+  <!-- ':collection' parameter is passed with the feed items, which causes render to use the given partial (’feed_item’ in this case) to render each item in the collection -->
+    <%= render partial: 'shared/feed_item', collection: @feed_items %> <!-- AKA app/views/shared/_feed_item.html.erb -->
+  </ol>
+  <%= will_paginate @feed_items %>
+<% end %>

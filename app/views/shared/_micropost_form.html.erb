@@ -1,0 +1,12 @@
+<!-- SOURCE: app/views/shared/_micropost_form.html.erb
+The form partial for creating microposts. 
+used in app/views/static_pages/home.html.erb
+ -->
+
+ <%= form_for(@micropost) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <div class="field">
+    <%= f.text_area :content, placeholder: "Compose new micropost..." %>
+  </div>
+  <%= f.submit "Post", class: "btn btn-large btn-primary" %>
+<% end %>

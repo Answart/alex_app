@@ -10,6 +10,9 @@
 
 class User < ActiveRecord::Base
 
+  # dependent microposts (i.e., the ones belonging to the given user) to be destroyed when the user itself is destroyed
+  has_many :microposts, dependent: :destroy
+
   # make sure that the email address is all lower-case before it gets
   ## saved to the database because not all database adapters
   ## use case-sensitive indices
@@ -35,9 +38,14 @@ class User < ActiveRecord::Base
   def User.new_remember_token
     SecureRandom.urlsafe_base64
   end
-
   def User.encrypt(token)
     Digest::SHA1.hexdigest(token.to_s)
+  end
+
+  # A preliminary implementation for the micropost status feed
+  def feed
+    # Ensures that id is properly escaped before being included in the underlying SQL query, thereby avoiding a serious security hole called SQL injection.
+    Micropost.where("user_id = ?", id)
   end
 
   private
