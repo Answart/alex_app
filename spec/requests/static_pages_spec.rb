@@ -39,6 +39,24 @@ describe "Static pages" do
           expect(page).to have_selector("li##{item.id}", text: item.content)
         end
       end
+
+      # Exercise 10.1 : Testing pluralized sidebar
+      it "should pluralize sidebar feed header" do # AKA app/views/shared/_user_info.html.erb
+        #page.should have_selector(‘section h1′, text: user.name) # didnt like ‘section h1′
+        #page.should have_selector(‘section span’, text: pluralize(Micropost.count.to_s, “micropost”)) # didnt like ‘section span’
+        #expect { pluralize(current_user.microposts.count, "micropost") } # works
+        expect(page).to have_content("micropost".pluralize(user.feed.count))
+        #page.should have_selector('section span', text: view.pluralize(Micropost.count.to_s, "micropost"))  # didnt like 'view.'
+      end
+
+      # Exercise 10.2: micropost pagination
+      describe "pagination" do
+        it "should paginate the feed" do
+          30.times { FactoryGirl.create(:micropost, user: user, content: "Consectetur adipiscing elit") }
+          visit root_path
+          page.should have_selector("div.pagination")
+        end
+      end
     end
   end
 

@@ -7,9 +7,9 @@
   <span class="timestamp">
     Posted <%= time_ago_in_words(micropost.created_at) %> ago.
   </span>
-  <% if current_user?(micropost.user) %>
-    <%= link_to "delete", micropost, method: :delete,
-                                     data: { confirm: "You sure?" },
-                                     title: micropost.content %>
-  <% end %>
+  
+  <!-- Exercise 10.5 delete partial to make sure delete links do not appear for microposts not created by the current user with user conditional -->
+  <%= render partial: "shared/item_delete_link", 
+          locals: { item: micropost, user: @user } %>
+
 </li>

@@ -3,8 +3,7 @@
 # ensures that the data model from the development database, db/development.sqlite3, is reflected in the test database, db/test.sqlite3.
 # tests currently for: app/models/user.rb
 
-# AKA /spec/spec_helper.rb
-require 'spec_helper'
+require 'spec_helper' # AKA /spec/spec_helper.rb
 
 describe User do
 
@@ -47,7 +46,7 @@ describe User do
       @user.save!
       @user.toggle!(:admin)
     end
-    it { should be_admin }
+    it { should be_admin } # implies (via the RSpec boolean convention) that the user should have an admin? boolean method
   end
 
   # VALIDATIONS

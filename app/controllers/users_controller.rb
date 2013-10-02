@@ -19,9 +19,11 @@
 # each 'def's main purpose is to modify information about users in the database
 
 class UsersController < ApplicationController
-  before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
-  before_action :correct_user,   only: [:edit, :update]
-  before_action :admin_user,     only: :destroy
+  before_action :signed_in_user, only: [:index, :edit, :update, :destroy] # 
+  #before_filter :existing_user,   only: [:new, :create]
+  #before_filter :authenticate,   only: [:index,:show,:edit, :update]
+  before_filter :correct_user,   only: [:edit, :update]
+  before_filter :admin_user,     only: :destroy
   # Exercise 9.6: 
   before_filter :signed_in_user_filter, only: [:new, :create]
 
@@ -50,7 +52,7 @@ class UsersController < ApplicationController
 
   # /users/1/edit or /users/2342960/edit or /users/:id/edit
   def edit
-    # @user = User.find(params[:id])
+    # @user = User.find(params[:id]) # <-- we can delete this because the before filter correct_user now defines @user variable
   end
 
   def update
@@ -72,8 +74,9 @@ class UsersController < ApplicationController
   # Exercise 9.9
   def destroy
     @user = User.find(params[:id])
+    #@admin = 
     if current_user?(@user)
-      redirect_to users_path, notice: "You can't destroy yourself."
+      redirect_to users_url, notice: "You can't destroy yourself."
     else
       @user.destroy
       flash[:success] = "User destroyed."
@@ -120,6 +123,10 @@ class UsersController < ApplicationController
     #  end
       #- redirect_to signin_url, notice: "Please sign in." unless signed_in?
     #end -> MOVED TO: app/helpers/sessions_helper.rb
+
+    #def authenticate
+    #  deny_access unless signed_in?
+    #end
 
     # 
     def correct_user

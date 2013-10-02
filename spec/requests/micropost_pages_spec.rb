@@ -14,7 +14,6 @@ describe "Micropost pages" do
     before { visit root_path } # start at the home page
 
     describe "with invalid information" do
-
       it "should not create a micropost" do
         expect { click_button post }.not_to change(Micropost, :count) # clicking the Post button doesn't increase amount of Microposts
       end
@@ -25,7 +24,6 @@ describe "Micropost pages" do
     end
 
     describe "with valid information" do
-
       before { fill_in 'micropost_content', with: "Lorem ipsum" } # when a post is filled in
       it "should create a micropost" do
         expect { click_button post }.to change(Micropost, :count).by(1) # post count increases by 1
@@ -45,5 +43,4 @@ describe "Micropost pages" do
       end
     end
   end
-
 end

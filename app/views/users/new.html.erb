@@ -16,7 +16,6 @@ SEVENTH step:
   	<!-- By this point, it is expected '@user' to be a User object and POST to the URL /users -->
     <%= form_for(@user) do |f| %>
 
-      
       <%= render 'fields', f: f %>
 
       <%= f.submit "Create my account", class: "btn btn-large btn-primary" %>

@@ -2,7 +2,7 @@
 SIXTH step:
 1. receives info from controller (Static_Pages_Controller in this case)
 SEVENTH step:
-1. view uses embedded Ruby to render the page as HTML
+1. View uses embedded Ruby to render the page as HTML
  -->
 
 <!-- Adding microposts creation to the Home page -->
@@ -12,6 +12,7 @@ SEVENTH step:
       <section>
         <%= render 'shared/user_info' %> <!-- AKA  app/views/shared/_user_info.html.erb -->
       </section>
+      
       <section>
         <%= render 'shared/micropost_form' %> <!-- AKA app/views/shared/_micropost_form.html.erb -->
       </section>

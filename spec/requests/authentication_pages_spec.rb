@@ -7,7 +7,11 @@ require 'spec_helper'   # AKA /spec/spec_helper.rb
 describe "Authentication" do
   subject { page }
   let(:login) { "Sign in" } # need this as capybara has problem understanding buttons
+  let(:signup) { "Create my account" }
   let(:user) { FactoryGirl.create(:user) }
+  let(:admin) { FactoryGirl.create(:admin) }
+  let(:non_admin) { FactoryGirl.create(:user) }
+
 
   describe "signin page" do # AKA app/views/sessions/new.html.erb
   	before { visit signin_path }
@@ -24,10 +28,12 @@ describe "Authentication" do
       describe "after visiting another page" do
         before { click_link "Home" }
         it { should_not have_selector('div.alert.alert-error') }
+        #it{ should_not have_error_message()}
+
+        ## ... should not show information
+        it { should_not have_link('Profile')} # ,     href: user_path(user) 
+        it { should_not have_link('Settings')} # ,    href: edit_user_path(user)
       end
-      ## ... should not show information
-      it { should_not have_link('Profile')} # ,     href: user_path(user) 
-      it { should_not have_link('Settings')} # ,    href: edit_user_path(user)
     end
 
     # if sign-in info is valid when logging on ...
@@ -45,7 +51,7 @@ describe "Authentication" do
       	##end
       #OR: before { sign_in user }
       ## ... should show profile information
-      it { should have_title(user.name) }
+      it { should have_title(user.name) } # AKA 'it{ should have_selector('title', text: user.name)}'
       it { should have_link('Users',       href: users_path) }
       it { should have_link('Profile',     href: user_path(user)) }
       it { should have_link('Settings',    href: edit_user_path(user)) }
@@ -65,6 +71,11 @@ describe "Authentication" do
     describe "for non-signed-in users" do
       # create an ActiveRecord object to be the symbol 'user'
       #let(:user) { FactoryGirl.create(:user) }
+
+
+      #let(:admin) {FactoryGirl.create(:admin)}
+      #let(:non_admin) {FactoryGirl.create(:user)}
+      #before { valid_signin non_admin }
 
       # Anons visiting a protected page are friendly forwarded. 
       describe "when attempting to visit a protected page" do
@@ -136,13 +147,21 @@ describe "Authentication" do
     end
 
     describe "as non-admin user" do
-      #let(:user) { FactoryGirl.create(:user) }
-      let(:non_admin) { FactoryGirl.create(:user) }
       before { sign_in non_admin, no_capybara: true }
 
+      # before { sign_in(user, no_capybara: true) }
+      # before { sign_in non_admin }
+      # before { sign_in non_admin, no_capybara: true }
+      # before { valid_signin(user) } # valid_signin(non_admin)
+
+      #Check that loggin to nonadmin works(debug ex.9.6-9)
+      describe "should render the non-admin profile page" do
+        it { should_not have_selector('title', text: admin.name) }
+      end
       describe "submitting a DELETE request to the Users#destroy action" do
-        before { delete user_path(user) }
-        specify { expect(response).to redirect_to(root_url) }
+        before { delete user_path(admin) }
+        specify { expect(response).to redirect_to(root_url) } # AKA 'specify { response.should redirect_to(root_path) }'
+        specify { response.should_not be_success }
       end
     end
 
@@ -156,10 +175,12 @@ describe "Authentication" do
         specify { expect(response.body).not_to match(full_title('Edit user')) }
         specify { expect(response).to redirect_to(root_url) }
       end
-
       describe "submitting a PATCH request to the Users#update action" do
         before { patch user_path(wrong_user) }
         specify { expect(response).to redirect_to(root_url) }
+      end
+      describe "links do not appear on other's microposts" do
+
       end
     end
 
@@ -172,7 +193,7 @@ describe "Authentication" do
       ## sign_in method, since get and post are not capybara methods and I think 
       ## RSpec doesn't behave as we might expect if we switch from capybara to 
       ## non-capybara methods within the same test.
-      before { sign_in user, no_capybara: true  } # used because a user hash would only be needed if Rails actually carries out the create method, which is what we're trying to prevent.
+      before { sign_in user, no_capybara: true } # used because a user hash would only be needed if Rails actually carries out the create method, which is what we're trying to prevent.
 
       describe "using 'new' action" do
         before { get new_user_path }
@@ -194,17 +215,62 @@ describe "Authentication" do
       end    
     end
 
-    #describe "admin users" do
+    describe "admin users" do
       ## Exercise 10.6.5 Modify the destroy action to prevent admin
       ## users from destroying themselves. (Write a test first.)
-    #  it "cannot destroy themselves" do
-    #    admin = Factory(:user, :email => "admin@example.com", :admin => true)
-    #    test_sign_in(admin)
-    #    User.should_receive(:find).with(admin).and_return(admin)
-    #    delete :destroy, :id => admin
-    #    response.should redirect_to(users_path)
-    #    flash[:error].should =~ /Admin suicide warning/i
-    #  end
-    #end
+      let!(:user){FactoryGirl.create(:user)}
+      let!(:admin){FactoryGirl.create(:admin)} # , email: "example@railstutorial.org", :admin => "true"
+      let!(:non_admin){FactoryGirl.create(:user)}
+      #before{ valid_signin(admin) }
+      before do
+        sign_in admin, no_capybara: true
+        #visit users_path
+      end
+      #before { FactoryGirl.create(:admin) }
+
+      #before{ valid_signin admin }
+      #before(:each) do
+       # @admin = Factory(:user, :email => "admin@example.com", :admin => "true")
+       # test_sign_in(@admin)
+      #end
+
+      describe "cannot destroy themself" do
+        #it { should be_admin }
+        before { delete user_path(admin) }
+        specify { response.should_not be_success }
+        specify { expect(admin.reload).to be_admin }
+        it "which doesn't change User count" do
+          expect { delete user_path(admin) }.not_to change(User, :count)
+          expect { delete user_path(admin) }.to change{User.count}.by(0)
+          expect { delete user_path(admin) }.to change(User, :count).by(0)
+          #lambda do
+          #  delete :destroy, :id => admin 
+          #end.should_not change(User, :count) # doesnt work
+        end 
+      end
+      #describe "can destroy normal users" do
+        #it { should be_admin }
+      #  before { delete user_path(user) }
+      #  specify { response.should be_success }
+      #  specify { expect(admin.reload).to be_admin }
+        #specify { response.should redirect_to(signin_path) }
+        #specify { response.should redirect_to(user_path) }
+        # specify { response.should change{User.count}.by(0) }
+        # expect { delete user_path(admin) }.not_to change(User, :count) 
+      #  it "which lowers User count" do
+          #user = FactoryGirl.create(:user)
+          #expect { delete user_path(user), {}, 'HTTP_COOKIE' => "remember_token=#{admin.remember_token}, #{Capybara.current_session.driver.response.headers["Set-Cookie"]}" }.to change(User, :count).by(-1)
+      #    expect { delete user_path(user) }.to change(User, :count).by(-1) # doesnt work
+      #    expect do
+      #      delete :destroy, match: :first # click_link('delete'
+      #    end.to change(User, :count).by(-1)
+          #expect do
+          #  delete :destroy, :id => user.id
+          #end.should change{ User.count }.by(-1)
+          #expect { delete user_path(user) }.to change(User, :count)
+          #expect { delete user_path(user) }.to change{User.count}.by(-1) # doesnt work
+      #  end
+      #end
+    end
   end
 end

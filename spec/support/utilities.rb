@@ -20,6 +20,13 @@ def valid_signin(user)
   click_button login
 end
 
+#def valid_signin(admin)
+#  fill_in "Email",    with: admin.email
+#  fill_in "Password", with: admin.password
+#  click_button login
+#end
+
+
 # a custom RSpec matcher for error messages
 RSpec::Matchers.define :have_error_message do |message|
   match do |page|
@@ -28,11 +35,11 @@ RSpec::Matchers.define :have_error_message do |message|
 end
 
 # a custom RSpec matcher for alert messages (cant get to work)
-#RSpec::Matchers.define :have_alert_message do |message|
-#  match do |page|
-#    expect(page).to have_selector('div.alert.alert-success', text: message)
-#  end
-#end
+RSpec::Matchers.define :have_success_message do |message|
+    match do |page|
+        page.should have_selector('div.alert.alert-success', text: message)
+    end
+end
 
 # custom matcher for identifying buttons and links
 #RSpec::Matchers::define :have_link_or_button do |text|
@@ -45,6 +52,7 @@ end
 # sign in helper to visit login page and submit valid info
 def sign_in(user, options={})
   if options[:no_capybara]
+    # Sign in when not using Capybara as well.
     remember_token = User.new_remember_token
     cookies[:remember_token] = remember_token
     user.update_attribute(:remember_token, User.encrypt(remember_token))

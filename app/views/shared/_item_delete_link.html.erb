@@ -1,0 +1,11 @@
+<!-- SOURCE: app/views/shared/_item_delete_link.html.erb
+used in: app/views/microposts/_micropost.html.erb
+Exercise 10.5 delete partial to make sure delete links do not appear for microposts not created by the current user (with user conditional)
+-->
+
+  <% if current_user?(item.user) %>
+ 	<!-- writing the Ruby hash syntax version of 'locals: { symbol: :original-local }' -->
+    <%= link_to "delete", item, method: :delete, 
+    							:data => { :confirm => "You sure?" }, # used to be '#confirm: "You sure?",'
+								title: item.content %>
+  <% end %>

@@ -13,7 +13,7 @@ describe "User pages" do
 
   describe "index" do
   	#let(:user) { FactoryGirl.create(:user) } # AKA spec/factories.rb
-    before(:each) do
+    before do # before(:each) do
       sign_in user
       visit users_path
     end
@@ -114,17 +114,9 @@ describe "User pages" do
         before { click_button signup }
         let(:user) { User.find_by(email: 'user@example.com') }
 
-        it { should have_title(user.name) }
-        # contain particular CSS classes along with specific HTML tags
-        it { should have_selector('div.alert.alert-success', text: 'Welcome') } # OR: it { should have_alert_message('Welcome') }
-      end
-      ## ... has a user successfully signed in
-      describe "after saving the user" do
-        before { click_button signup }
-        let(:user) { User.find_by(email: 'user@example.com') }
-
         it { should have_link('Sign out') }
         it { should have_title(user.name) }
+        # contain particular CSS classes along with specific HTML tags
         it { should have_selector('div.alert.alert-success', text: 'Welcome') } # OR: it { should have_alert_message('Welcome') }
       end
     end
@@ -159,11 +151,12 @@ describe "User pages" do
       #before { valid_savechange(user) } # referring to spec/support/utilities.rb
       ## ... inputs are filled in with valid info
       before do
-        fill_in "Name",             with: new_name
-        fill_in "Email",            with: new_email
-        fill_in "Password",         with: user.password
-        fill_in "Confirm Password", with: user.password
-        click_button savechanges
+        valid_savechange(user)
+      #  fill_in "Name",             with: new_name
+      #  fill_in "Email",            with: new_email
+      #  fill_in "Password",         with: user.password
+      #  fill_in "Confirm Password", with: user.password
+      #  click_button savechanges
       end
 
       it { should have_title(new_name) }
@@ -179,9 +172,10 @@ describe "User pages" do
     # verify that the admin attribute isn’t editable through the web
     # Be sure: get Red first, then Green. (Hint: Your first step 
     ## should be to add admin to the list of permitted parameters in user_params.
-    describe "forbidden attributes" do
+    describe "forbidden attributes" do # Testing that the admin attribute is forbidden
       let(:params) do
-        { user: { admin: true, password: user.password,
+        { user: { admin: true,
+                  password:              user.password,
                   password_confirmation: user.password } }
       end
       before do
