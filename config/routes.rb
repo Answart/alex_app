@@ -9,9 +9,14 @@ AlexApp::Application.routes.draw do
   # it doesn’t just add a working /users/1 URL; it endows our sample 
   ## application with all the actions needed for a RESTful Users resource
   ## along with a large number of named routes (Section 5.3.3) for generating user URLs
-  resources :users
+  resources :users do
+    member do
+      get :following, :followers
+    end
+  end
   resources :sessions, only: [:new, :create, :destroy]
   resources :microposts, only: [:create, :destroy]
+  resources :relationships, only: [:create, :destroy]
   # match '/',      to: 'static_pages#home',    via: 'get'
   root 'static_pages#home'
 

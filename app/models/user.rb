@@ -12,6 +12,12 @@ class User < ActiveRecord::Base
 
   # dependent microposts (i.e., the ones belonging to the given user) to be destroyed when the user itself is destroyed
   has_many :microposts, dependent: :destroy
+  has_many :relationships, foreign_key: "follower_id", dependent: :destroy
+  has_many :followed_users, through: :relationships, source: :followed
+  has_many :reverse_relationships, foreign_key: "followed_id",
+                                   class_name:  "Relationship",
+                                   dependent:   :destroy
+  has_many :followers, through: :reverse_relationships, source: :follower
 
   # make sure that the email address is all lower-case before it gets
   ## saved to the database because not all database adapters
@@ -45,7 +51,17 @@ class User < ActiveRecord::Base
   # A preliminary implementation for the micropost status feed
   def feed
     # Ensures that id is properly escaped before being included in the underlying SQL query, thereby avoiding a serious security hole called SQL injection.
-    Micropost.where("user_id = ?", id)
+    Micropost.from_users_followed_by(self)
+  end
+
+  def following?(other_user)
+    relationships.find_by(followed_id: other_user.id)
+  end
+  def follow!(other_user)
+    relationships.create!(followed_id: other_user.id)
+  end
+  def unfollow!(other_user)
+    relationships.find_by(followed_id: other_user.id).destroy!
   end
 
   private

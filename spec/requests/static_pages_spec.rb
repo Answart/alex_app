@@ -40,6 +40,16 @@ describe "Static pages" do
         end
       end
 
+      describe "follower/following counts" do
+        let(:other_user) { FactoryGirl.create(:user) }
+        before do
+          other_user.follow!(user)
+          visit root_path
+        end
+        it { should have_link("0 following", href: following_user_path(user)) }
+        it { should have_link("1 followers", href: followers_user_path(user)) }
+      end
+
       # Exercise 10.1 : Testing pluralized sidebar
       it "should pluralize sidebar feed header" do # AKA app/views/shared/_user_info.html.erb
         #page.should have_selector(‘section h1′, text: user.name) # didnt like ‘section h1′

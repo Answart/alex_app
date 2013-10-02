@@ -19,7 +19,7 @@
 # each 'def's main purpose is to modify information about users in the database
 
 class UsersController < ApplicationController
-  before_action :signed_in_user, only: [:index, :edit, :update, :destroy] # 
+  before_action :signed_in_user, only: [:index, :edit, :update, :destroy, :following, :followers]
   #before_filter :existing_user,   only: [:new, :create]
   #before_filter :authenticate,   only: [:index,:show,:edit, :update]
   before_filter :correct_user,   only: [:edit, :update]
@@ -101,6 +101,20 @@ class UsersController < ApplicationController
       #flash.now[:error] = 'Invalid email/password combination'
       render 'new'
     end
+  end
+
+  # 
+  def following
+    @title = "Following"
+    @user = User.find(params[:id])
+    @users = @user.followed_users.paginate(page: params[:page])
+    render 'show_follow'
+  end
+  def followers
+    @title = "Followers"
+    @user = User.find(params[:id])
+    @users = @user.followers.paginate(page: params[:page])
+    render 'show_follow'
   end
 
   # Using 'private' means the following will only be used internally by the 

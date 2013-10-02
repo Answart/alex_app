@@ -13,10 +13,13 @@ This page uses Embedded Ruby to display the user’s name and email address, ass
         <%= @user.name %>
       </h1>
     </section>
-    
+    <section>
+      <%= render 'shared/stats' %>
+    </section>
   </aside>
 
   <div class="span8">
+    <%= render 'follow_form' if signed_in? %>
     <% if @user.microposts.any? %>
       <!-- counts the microposts belonging to a given user through the user/micropost association -->
       <h3>Microposts (<%= @user.microposts.count %>)</h3>
