@@ -1,8 +1,10 @@
 <!-- SOURCE: app/views/users/_unfollow.html.erb
+A form for unfollowing a user. AJAX too
+HTML of 'remote: true' creates data-remote="true" inside the form tag, which tells Rails to allow the form to be handled by JavaScript
 -->
 
 <%= form_for(current_user.relationships.find_by(followed_id: @user),
              html: { method: :delete },
-             remote: true) do |f| %>
+             remote: true) do |f| %> <!-- ', remote: true' allows web pages to send requests asynchronously to the server without leaving the page to add Ajax to web forms -->
   <%= f.submit "Unfollow", class: "btn btn-large" %>
 <% end %>

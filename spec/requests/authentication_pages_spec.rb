@@ -271,16 +271,19 @@ describe "Authentication" do
           #end.should_not change(User, :count) # doesnt work
         end 
       end
-      #describe "can destroy normal users" do
+      describe "can destroy normal users" do
         #it { should be_admin }
-      #  before { delete user_path(user) }
+        before { delete user_path(user) }
       #  specify { response.should be_success }
       #  specify { expect(admin.reload).to be_admin }
         #specify { response.should redirect_to(signin_path) }
         #specify { response.should redirect_to(signin_path) }
         # specify { response.should change{User.count}.by(0) }
         # expect { delete user_path(admin) }.not_to change(User, :count) 
-      #  it "which lowers User count" do
+        it "which lowers User count" do
+          #expect do
+          #  :delete, :destroy, id: user.id
+          #end.to change(User, :count).by(-1)
           #user = FactoryGirl.create(:user)
           #expect { delete user_path(user), {}, 'HTTP_COOKIE' => "remember_token=#{admin.remember_token}, #{Capybara.current_session.driver.response.headers["Set-Cookie"]}" }.to change(User, :count).by(-1)
       #    expect { delete user_path(user) }.to change(User, :count).by(-1) # doesnt work
@@ -292,8 +295,8 @@ describe "Authentication" do
           #end.should change{ User.count }.by(-1)
           #expect { delete user_path(user) }.to change(User, :count)
           #expect { delete user_path(user) }.to change{User.count}.by(-1) # doesnt work
-      #  end
-      #end
+        end
+      end
     end
   end
 end

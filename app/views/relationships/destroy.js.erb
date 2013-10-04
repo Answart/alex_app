@@ -1,2 +1,6 @@
+// SOURCE: The Ruby JavaScript (RJS) to destroy a following relationship.
+// update the follow form with the unfollow partial (which is what should show after a successful following) and update the follower count.
+// This uses the 'escape_javascript' function, which is needed to escape out the result when inserting HTML in a JavaScript file.
+
 $("#follow_form").html("<%= escape_javascript(render('users/follow')) %>")
 $("#followers").html('<%= @user.followers.count %>')

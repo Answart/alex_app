@@ -37,11 +37,16 @@ describe User do
   # test for the user’s microposts attribute. 
   it { should respond_to(:microposts) }
   it { should respond_to(:feed) }
+  # 'user.relationships' attribute test
   it { should respond_to(:relationships) }
+  # 'user.followed_users' attribute test | user can see array of those they followed
   it { should respond_to(:followed_users) }
   it { should respond_to(:reverse_relationships) }
   it { should respond_to(:followers) }
+  # boolean method to test if one user is following another
   it { should respond_to(:following?) }
+  # utility method so that we can write user.follow!(other_user)
+  # we indicate with an exclamation point that an exception will be raised on failure.
   it { should respond_to(:follow!) }
   # all attributes for User should be valid to be an accepted User
   it { should be_valid }

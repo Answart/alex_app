@@ -32,6 +32,7 @@ def make_microposts
   end
 end
 
+# Adding following/follower relationships to the sample data
 def make_relationships
   users = User.all
   user  = users.first

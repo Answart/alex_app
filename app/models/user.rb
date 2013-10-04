@@ -12,12 +12,23 @@ class User < ActiveRecord::Base
 
   # dependent microposts (i.e., the ones belonging to the given user) to be destroyed when the user itself is destroyed
   has_many :microposts, dependent: :destroy
-  has_many :relationships, foreign_key: "follower_id", dependent: :destroy
-  has_many :followed_users, through: :relationships, source: :followed
-  has_many :reverse_relationships, foreign_key: "followed_id",
-                                   class_name:  "Relationship",
+  # 'foreign key': An id used in this manner to connect two database tables
+  ## Rails expects a foreign key of the form <class>_id, where <class> is the lower-case version of the class name
+  # foreign key for a User model object is user_id, although we are still dealing 
+  ## with users, they are now identified with the foreign key follower_id, so we 
+  ## have to tell that to Rails
+  # destroying a user should also destroy that user’s relationships, dependent: :destroy is added to the association
+  # foreign keys from the corresponding symbols (follower_id from :follower | followed_id from :followed)
+  has_many :relationships, foreign_key: "follower_id", dependent: :destroy # User(primary key) has many relationships - where it identifies as the 'follower_id' in the table
+  # assembles an array using the followed_id in the relationships table.
+  # :source parameter tells Rails the source of the followed_users array is the set of followed ids.
+  # EX: ':followed' is source of 'followed_users' array AKA individual tables identifying each followed's info
+  # :relationships, made possible by 'let' in spec/models/relationship_spec.rb
+  has_many :followed_users, through: :relationships, source: :followed # User/follower has many followeds/followed_ids illustrated under the :followed array of user.followed_users
+  has_many :reverse_relationships, foreign_key: "followed_id", # User(primary key) has many relationships - where it identifies as the 'followed_id' in the table
+                                   class_name:  "Relationship", # based on the relationship class
                                    dependent:   :destroy
-  has_many :followers, through: :reverse_relationships, source: :follower
+  has_many :followers, through: :reverse_relationships, source: :follower # User/followed has many followers/follower_ids illustrated under the :follower array of user.followers
 
   # make sure that the email address is all lower-case before it gets
   ## saved to the database because not all database adapters

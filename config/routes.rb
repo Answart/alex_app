@@ -10,13 +10,14 @@ AlexApp::Application.routes.draw do
   ## application with all the actions needed for a RESTful Users resource
   ## along with a large number of named routes (Section 5.3.3) for generating user URLs
   resources :users do
+    # Adding following and followers actions to the Users controller. 
     member do
       get :following, :followers
     end
   end
-  resources :sessions, only: [:new, :create, :destroy]
-  resources :microposts, only: [:create, :destroy]
-  resources :relationships, only: [:create, :destroy]
+  resources :sessions,      only: [:new, :create, :destroy]
+  resources :microposts,    only: [:create, :destroy]
+  resources :relationships, only: [:create, :destroy] # Adding the routes for user relationships
   # match '/',      to: 'static_pages#home',    via: 'get'
   root 'static_pages#home'
 

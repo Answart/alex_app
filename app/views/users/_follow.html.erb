@@ -1,8 +1,10 @@
 <!-- SOURCE: app/views/users/_follow.html.erb
+A form for following a user. AJAX too
+HTML of 'remote: true' creates data-remote="true" inside the form tag, which tells Rails to allow the form to be handled by JavaScript
 -->
 
 <%= form_for(current_user.relationships.build(followed_id: @user.id),
-             remote: true) do |f| %>
+             remote: true) do |f| %> <!-- ', remote: true' allows web pages to send requests asynchronously to the server without leaving the page to add Ajax to web forms -->
   <div><%= f.hidden_field :followed_id %></div>
   <%= f.submit "Follow", class: "btn btn-large btn-primary" %>
 <% end %>
