@@ -30,6 +30,7 @@ class UsersController < ApplicationController
   # asks the User model the browser will be sent to, to retrieve a list of 
   ## all the users from the database (step 3)
   def index
+    # 
     @users = User.paginate(page: params[:page])
   end
 
